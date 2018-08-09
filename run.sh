@@ -1,2 +1,2 @@
 #!/bin/sh
-java gui.Home
+java meshgui.Home
