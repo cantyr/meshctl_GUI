@@ -4,8 +4,8 @@
 extern "C" {
 #endif
 
-void mesh_init(void);
-void cmd_security(int);
+int mesh_init(void);
+/*void cmd_security(int);
 void cmd_scan_unprovisioned(int);
 void cmd_start_prov(const char []);
 void cmd_appkey_add(int);
@@ -14,7 +14,7 @@ void onoff_set(int);
 void hsl_set(int, int, int);
 void ctl_set(int, int);
 void lightness_set(int);
-void level_set(int);
+void level_set(int);*/
 
 #ifdef __cplusplus
 }

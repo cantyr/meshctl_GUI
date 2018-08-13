@@ -202,7 +202,7 @@ static bool pipe_write(struct io *io, void *user_data)
 
 		err = io_send(io, iov, 2);
 		if (err < 0) {
-			bt_shell_printf("Failed to write: %s\n", strerror(-err));
+			printf("Failed to write: %s\n", strerror(-err));
 			write_data_free(data);
 			return false;
 		}
@@ -249,7 +249,7 @@ static void notify_io_destroy(void)
 
 static bool pipe_hup(struct io *io, void *user_data)
 {
-	bt_shell_printf("%s closed\n", io == notify_io ? "Notify" : "Write");
+	printf("%s closed\n", io == notify_io ? "Notify" : "Write");
 
 	if (io == notify_io)
 		notify_io_destroy();
@@ -282,7 +282,7 @@ static void acquire_write_reply(DBusMessage *message, void *user_data)
 
 	if (dbus_set_error_from_message(&error, message) == TRUE) {
 		dbus_error_free(&error);
-		bt_shell_printf("Failed to write\n");
+		printf("Failed to write\n");
 		write_data_free(data);
 		return;
 	}
@@ -290,11 +290,11 @@ static void acquire_write_reply(DBusMessage *message, void *user_data)
 	if ((dbus_message_get_args(message, NULL, DBUS_TYPE_UNIX_FD, &fd,
 					DBUS_TYPE_UINT16, &write_mtu,
 					DBUS_TYPE_INVALID) == false)) {
-		bt_shell_printf("Invalid AcquireWrite response\n");
+		printf("Invalid AcquireWrite response\n");
 		return;
 	}
 
-	bt_shell_printf("AcquireWrite success: fd %d MTU %u\n", fd, write_mtu);
+	printf("AcquireWrite success: fd %d MTU %u\n", fd, write_mtu);
 
 	write_io = pipe_io_new(fd);
 
@@ -347,7 +347,7 @@ bool mesh_gatt_write(GDBusProxy *proxy, uint8_t *buf, uint16_t len,
 	if (g_dbus_proxy_method_call(proxy, "AcquireWrite",
 				acquire_setup, acquire_write_reply,
 				data, NULL) == FALSE) {
-		bt_shell_printf("Failed to AcquireWrite\n");
+		printf("Failed to AcquireWrite\n");
 		write_data_free(data);
 		return false;
 	}
@@ -362,13 +362,13 @@ static void notify_reply(DBusMessage *message, void *user_data)
 	dbus_error_init(&error);
 
 	if (dbus_set_error_from_message(&error, message) == TRUE) {
-		bt_shell_printf("Failed to %s notify: %s\n",
+		printf("Failed to %s notify: %s\n",
 				data->enable ? "start" : "stop", error.name);
 		dbus_error_free(&error);
 		goto done;
 	}
 
-	bt_shell_printf("Notify %s\n", data->enable ? "started" : "stopped");
+	printf("Notify %s\n", data->enable ? "started" : "stopped");
 
 done:
 	if (data->cb)
@@ -428,7 +428,7 @@ static void acquire_notify_reply(DBusMessage *message, void *user_data)
 		dbus_error_free(&error);
 		if (g_dbus_proxy_method_call(data->proxy, "StartNotify", NULL,
 					notify_reply, data, NULL) == FALSE) {
-			bt_shell_printf("Failed to StartNotify\n");
+			printf("Failed to StartNotify\n");
 			g_free(data);
 		}
 		return;
@@ -446,13 +446,13 @@ static void acquire_notify_reply(DBusMessage *message, void *user_data)
 					DBUS_TYPE_INVALID) == false)) {
 		if (g_dbus_proxy_method_call(data->proxy, "StartNotify", NULL,
 					notify_reply, data, NULL) == FALSE) {
-			bt_shell_printf("Failed to StartNotify\n");
+			printf("Failed to StartNotify\n");
 			g_free(data);
 		}
 		return;
 	}
 
-	bt_shell_printf("AcquireNotify success: fd %d MTU %u\n", fd, notify_mtu);
+	printf("AcquireNotify success: fd %d MTU %u\n", fd, notify_mtu);
 
 	if (g_dbus_proxy_get_property(data->proxy, "UUID", &iter) == FALSE)
 		goto done;
@@ -512,7 +512,7 @@ bool mesh_gatt_notify(GDBusProxy *proxy, bool enable, GDBusReturnFunction cb,
 
 	if (g_dbus_proxy_method_call(proxy, method, setup, cb,
 					data, NULL) == FALSE) {
-		bt_shell_printf("Failed to %s\n", method);
+		printf("Failed to %s\n", method);
 		return false;
 	}
 	return true;

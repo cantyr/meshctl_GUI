@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <stdio.h>
 
 #include <linux/if_alg.h>
 
@@ -50,14 +51,14 @@ static int alg_new(int fd, const void *keyval, socklen_t keylen,
 		size_t mic_size)
 {
 	if (setsockopt(fd, SOL_ALG, ALG_SET_KEY, keyval, keylen) < 0) {
-		g_printerr("key");
+		printf("key");
 		return -1;
 	}
 
 	if (mic_size &&
 		setsockopt(fd, SOL_ALG,
 			ALG_SET_AEAD_AUTHSIZE, NULL, mic_size) < 0) {
-		g_printerr("taglen");
+		printf("taglen");
 		return -1;
 	}
 
@@ -255,7 +256,7 @@ bool mesh_crypto_aes_ccm_encrypt(const uint8_t nonce[13], const uint8_t key[16],
 	int fd;
 
 	if (aad_len >= 0xff00) {
-		g_printerr("Unsupported AAD size");
+		printf("Unsupported AAD size");
 		return false;
 	}
 
@@ -396,7 +397,7 @@ bool mesh_crypto_aes_ccm_encrypt(const uint8_t nonce[13], const uint8_t key[16],
 			*(uint64_t *)out_mic = get_be64(mic);
 			break;
 		default:
-			g_printerr("Unsupported MIC size");
+			printf("Unsupported MIC size");
 		}
 	}
 
@@ -564,7 +565,7 @@ bool mesh_crypto_aes_ccm_decrypt(const uint8_t nonce[13], const uint8_t key[16],
 			break;
 
 		default:
-			g_printerr("Unsupported MIC size");
+			printf("Unsupported MIC size");
 			result = false;
 	}
 

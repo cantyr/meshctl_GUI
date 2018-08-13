@@ -62,13 +62,13 @@ void print_byte_array(const char *prefix, const void *ptr, int len)
 		if ((i + 1) % 16) {
 			bytes += 3;
 		} else {
-			bt_shell_printf("\r%s\n", line);
+			printf("\r%s\n", line);
 			bytes = line + strlen(prefix) + 1;
 		}
 	}
 
 	if (i % 16)
-		bt_shell_printf("\r%s\n", line);
+		printf("\r%s\n", line);
 
 	g_free(line);
 }
@@ -120,7 +120,7 @@ uint16_t mesh_opcode_set(uint32_t opcode, uint8_t *buf)
 		put_be16(opcode, buf + 1);
 		return 3;
 	} else {
-		bt_shell_printf("Illegal Opcode %x", opcode);
+		printf("Illegal Opcode %x", opcode);
 		return 0;
 	}
 }
@@ -158,7 +158,7 @@ bool mesh_opcode_get(const uint8_t *buf, uint16_t sz, uint32_t *opcode, int *n)
 		break;
 
 	default:
-		bt_shell_printf("Bad Packet:\n");
+		printf("Bad Packet:\n");
 		print_byte_array("\t", (void *) buf, sz);
 		return false;
 	}
@@ -195,15 +195,15 @@ const char *mesh_status_str(uint8_t status)
 void print_model_pub(uint16_t ele_addr, uint32_t mod_id,
 						struct mesh_publication *pub)
 {
-	bt_shell_printf("\tElement: %4.4x\n", ele_addr);
-	bt_shell_printf("\tPub Addr: %4.4x", pub->u.addr16);
+	printf("\tElement: %4.4x\n", ele_addr);
+	printf("\tPub Addr: %4.4x", pub->u.addr16);
 	if (mod_id > 0xffff0000)
-		bt_shell_printf("\tModel: %8.8x \n", mod_id);
+		printf("\tModel: %8.8x \n", mod_id);
 	else
-		bt_shell_printf("\tModel: %4.4x \n",
+		printf("\tModel: %4.4x \n",
 				(uint16_t) (mod_id & 0xffff));
-	bt_shell_printf("\tApp Key Idx: %4.4x", pub->app_idx);
-	bt_shell_printf("\tTTL: %2.2x", pub->ttl);
+	printf("\tApp Key Idx: %4.4x", pub->app_idx);
+	printf("\tTTL: %2.2x", pub->ttl);
 }
 
 void swap_u256_bytes(uint8_t *u256)

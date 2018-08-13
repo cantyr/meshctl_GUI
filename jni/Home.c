@@ -5,6 +5,7 @@
 JNIEXPORT void JNICALL Java_meshgui_Home_init
 (JNIEnv *env, jclass class) {
   	printf("init()!!\n");
+    mesh_init();
 }
 
 JNIEXPORT void JNICALL Java_meshgui_Home_security

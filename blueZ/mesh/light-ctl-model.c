@@ -41,7 +41,7 @@ static int client_bind(uint16_t app_idx, int action)
 			return MESH_STATUS_INSUFF_RESOURCES;
 		} else {
 			ctl_app_idx = app_idx;
-			bt_shell_printf("CTL client model: new binding %4.4x\n",
+			printf("CTL client model: new binding %4.4x\n",
 								app_idx);
 		}
 	} else {
@@ -84,7 +84,7 @@ static void print_remaining_time(uint8_t remaining_time)
 		break;
 	}
 
-	bt_shell_printf("\n\t\tRemaining time: %d hrs %d mins %d secs %d msecs\n",
+	printf("\n\t\tRemaining time: %d hrs %d mins %d secs %d msecs\n",
 						hours, minutes, secs, msecs);
 
 }
@@ -101,7 +101,7 @@ static bool client_msg_recvd(uint16_t src, uint8_t *data,
 	} else
 		return false;
 
-	bt_shell_printf("CTL Model Message received (%d) opcode %x\n",
+	printf("CTL Model Message received (%d) opcode %x\n",
 								len, opcode);
 	print_byte_array("\t",data, len);
 
@@ -113,14 +113,14 @@ static bool client_msg_recvd(uint16_t src, uint8_t *data,
 		if (len != 1 && len != 3)
 			break;
 
-		bt_shell_printf("Node %4.4x: Off Status present = %s",
+		printf("Node %4.4x: Off Status present = %s",
 						src, data[0] ? "ON" : "OFF");
 
 		if (len == 3) {
-			bt_shell_printf(", target = %s", data[1] ? "ON" : "OFF");
+			printf(", target = %s", data[1] ? "ON" : "OFF");
 			print_remaining_time(data[2]);
 		} else
-			bt_shell_printf("\n");
+			printf("\n");
 		break;
 	}
 
@@ -163,11 +163,11 @@ static void cmd_set_node(int argc, char *argv[])
 
 	dst = strtol(argv[1], &end, 16);
 	if (end != (argv[1] + 4)) {
-		bt_shell_printf("Bad unicast address %s: "
+		printf("Bad unicast address %s: "
 				"expected format 4 digit hex\n", argv[1]);
 		target = UNASSIGNED_ADDRESS;
 	} else {
-		bt_shell_printf("Controlling CTL for node %4.4x\n", dst);
+		printf("Controlling CTL for node %4.4x\n", dst);
 		target = dst;
 		set_menu_prompt("CTL", argv[1]);
 	}
@@ -194,7 +194,7 @@ static void cmd_get_status(int argc, char *argv[])
 	struct mesh_node *node;
 
 	if (IS_UNASSIGNED(target)) {
-		bt_shell_printf("Destination not set\n");
+		printf("Destination not set\n");
 		return;
 	}
 
@@ -206,7 +206,7 @@ static void cmd_get_status(int argc, char *argv[])
 	n = mesh_opcode_set(OP_LIGHT_CTL_GET, msg);
 
 	if (!send_cmd(msg, n))
-		bt_shell_printf("Failed to send \"CTL GET\"\n");
+		printf("Failed to send \"CTL GET\"\n");
 }
 
 static void cmd_set(int argc, char *argv[])
@@ -217,7 +217,7 @@ static void cmd_set(int argc, char *argv[])
 	struct mesh_node *node;
 
 	if (IS_UNASSIGNED(target)) {
-		bt_shell_printf("Destination not set\n");
+		printf("Destination not set\n");
 		return;
 	}
 
@@ -231,7 +231,7 @@ static void cmd_set(int argc, char *argv[])
                                 (parms[1] > 100 && parms[1] < 0) &&
                                 (parms[2] > 64 && parms[2] < 0) &&
                                 (parms[3] > 1280 && parms[3] < 0)) {
-		bt_shell_printf("Bad arguments: Expecting \"<800-20,000> <0-100> <0-64> <0-1280>\"\n");
+		printf("Bad arguments: Expecting \"<800-20,000> <0-100> <0-64> <0-1280>\"\n");
 		return;
 	}
 
@@ -254,7 +254,7 @@ static void cmd_set(int argc, char *argv[])
         msg[n++] = *ctl;
         
 	if (!send_cmd(msg, n))
-		bt_shell_printf("Failed to send \"CTL SET\"\n");
+		printf("Failed to send \"CTL SET\"\n");
 
 }
 

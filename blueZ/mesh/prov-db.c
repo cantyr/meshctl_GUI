@@ -82,7 +82,7 @@ static char* prov_file_read(const char *filename)
 
 	sz = read(fd, str, st.st_size);
 	if (sz != st.st_size)
-		bt_shell_printf("Incomplete read: %d vs %d\n", (int)sz,
+		printf("Incomplete read: %d vs %d\n", (int)sz,
 							(int)(st.st_size));
 
 	close(fd);
@@ -103,7 +103,7 @@ static void prov_file_write(json_object *jmain, bool local)
 
 	outfile = fopen(out_filename, "wr");
 	if (!outfile) {
-		bt_shell_printf("Failed to open file %s for writing\n", out_filename);
+		printf("Failed to open file %s for writing\n", out_filename);
 		return;
 	}
 
@@ -640,10 +640,10 @@ void prov_db_print_node_composition(struct mesh_node *node)
 
 done:
 	if (res)
-		bt_shell_printf("\tComposition data for node %4.4x %s\n",
+		printf("\tComposition data for node %4.4x %s\n",
 							primary, comp_str);
 	else
-		bt_shell_printf("\tComposition data for node %4.4x not present\n",
+		printf("\tComposition data for node %4.4x not present\n",
 								primary);
 	g_free(in_str);
 
@@ -1476,7 +1476,7 @@ bool prov_db_show(const char *filename)
 	if (!str)
 		return false;
 
-	bt_shell_printf("%s\n", str);
+	printf("%s\n", str);
 	g_free(str);
 	return true;
 }
@@ -1511,7 +1511,7 @@ static bool read_json_db(const char *filename, bool provisioner, bool local)
 
 		json_object_object_get_ex(jmain, "node", &jnode);
 		if (!jnode) {
-			bt_shell_printf("Cannot find \"node\" object");
+			printf("Cannot find \"node\" object");
 			goto done;
 		} else
 			result = parse_node(jnode, true);
@@ -1547,7 +1547,7 @@ static bool read_json_db(const char *filename, bool provisioner, bool local)
 		goto done;
 
 	len = json_object_array_length(jarray);
-	bt_shell_printf("# netkeys = %d\n", len);
+	printf("# netkeys = %d\n", len);
 
 	for (i = 0; i < len; ++i) {
 		uint32_t idx;
@@ -1585,7 +1585,7 @@ static bool read_json_db(const char *filename, bool provisioner, bool local)
 	json_object_object_get_ex(jmain, "appKeys", &jarray);
 	if (jarray) {
 		len = json_object_array_length(jarray);
-		bt_shell_printf("# appkeys = %d\n", len);
+		printf("# appkeys = %d\n", len);
 
 		for (i = 0; i < len; ++i) {
 			int app_idx;
@@ -1632,7 +1632,7 @@ static bool read_json_db(const char *filename, bool provisioner, bool local)
 		goto done;
 
 	len = json_object_array_length(jarray);
-	bt_shell_printf("# provisioners = %d\n", len);
+	printf("# provisioners = %d\n", len);
 
 	for (i = 0; i < len; ++i) {
 
@@ -1646,7 +1646,7 @@ static bool read_json_db(const char *filename, bool provisioner, bool local)
 		}
 
 		if (!parse_unicast_range(jtemp)) {
-			bt_shell_printf("Doneed to parse unicast range\n");
+			printf("Doneed to parse unicast range\n");
 			goto done;
 		}
 	}
@@ -1659,7 +1659,7 @@ static bool read_json_db(const char *filename, bool provisioner, bool local)
 
 	len = json_object_array_length(jarray);
 
-	bt_shell_printf("# provisioned nodes = %d\n", len);
+	printf("# provisioned nodes = %d\n", len);
 	for (i = 0; i < len; ++i) {
 		json_object *jnode;
 		jnode = json_object_array_get_idx(jarray, i);

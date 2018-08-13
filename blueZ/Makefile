@@ -1,0 +1,33 @@
+BLUEZ_INCLUDE = blueZ/
+BLUEZ_INCLUDE += blueZ/mesh
+BLUEZ_INCLUDE += blueZ/gdbus
+BLUEZ_INCLUDE += /usr/include/glib-2.0
+BLUEZ_INCLUDE += /usr/lib/x86_64-linux-gnu/glib-2.0/include
+BLUEZ_INCLUDE += /usr/include/dbus-1.0
+BLUEZ_INCLUDE += /usr/lib/x86_64-linux-gnu/dbus-1.0/include
+BLUEZ_INCLUDE += /usr/include/json-c
+BLUEZ_INCLUDE += jni/
+
+BLUEZ_SRCS = blueZ/mesh/main.c
+BLUEZ_SRCS += blueZ/mesh/prov-db.c
+BLUEZ_SRCS += blueZ/mesh/net.c
+BLUEZ_SRCS += blueZ/mesh/node.c
+BLUEZ_SRCS += blueZ/mesh/crypto.c
+BLUEZ_SRCS += blueZ/mesh/config-client.c
+BLUEZ_SRCS += blueZ/mesh/config-server.c
+BLUEZ_SRCS += blueZ/mesh/onoff-model.c
+BLUEZ_SRCS += blueZ/mesh/light-hsl-model.c
+BLUEZ_SRCS += blueZ/mesh/light-level-model.c
+BLUEZ_SRCS += blueZ/mesh/light-ctl-model.c
+BLUEZ_SRCS += blueZ/mesh/light-lightness-model.c
+BLUEZ_SRCS += blueZ/mesh/time-model.c
+BLUEZ_SRCS += blueZ/gdbus/*.c
+
+BLUEZ_LIBS = json-c 
+BLUEZ_LIBS += dbus-1
+BLUEZ_LIBS += glib-2.0
+BLUEZ_LIBS += dbus-glib-1
+BLUEZ_LIBS += gio-2.0
+BLUEZ_LIBS += gthread-2.0
+BLUEZ_LIBS += gobject-2.0
+BLUEZ_LIBS += readline

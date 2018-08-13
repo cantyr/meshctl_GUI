@@ -68,7 +68,7 @@ static void response_hexadecimal(const char *input, void *user_data)
 	uint8_t buf[MAX_HEXADECIMAL_OOB_LEN];
 
 	if (!str2hex(input, strlen(input), buf, pending_request.len) ) {
-		bt_shell_printf("Incorrect input: expecting %d hex octets\n",
+		printf("Incorrect input: expecting %d hex octets\n",
 			  pending_request.len);
 		return;
 	}
@@ -110,7 +110,7 @@ static bool request_hexadecimal(uint16_t len)
 	if (len > MAX_HEXADECIMAL_OOB_LEN)
 		return false;
 
-	bt_shell_printf("Request hexadecimal key (hex %d octets)\n", len);
+	printf("Request hexadecimal key (hex %d octets)\n", len);
 	bt_shell_prompt_input("mesh", "Enter key (hex number):", response_hexadecimal,
 								NULL);
 
@@ -129,7 +129,7 @@ static uint32_t power_ten(uint8_t power)
 
 static bool request_decimal(uint16_t len)
 {
-	bt_shell_printf("Request decimal key (0 - %d)\n", power_ten(len) - 1);
+	printf("Request decimal key (0 - %d)\n", power_ten(len) - 1);
 	bt_shell_prompt_input("mesh", "Enter Numeric key:", response_decimal, NULL);
 
 	return true;
@@ -140,7 +140,7 @@ static bool request_ascii(uint16_t len)
 	if (len > MAX_ASCII_OOB_LEN)
 		return false;
 
-	bt_shell_printf("Request ASCII key (max characters %d)\n", len);
+	printf("Request ASCII key (max characters %d)\n", len);
 	bt_shell_prompt_input("mesh", "Enter key (ascii string):", response_ascii,
 									NULL);
 

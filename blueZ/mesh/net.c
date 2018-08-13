@@ -958,7 +958,7 @@ static void beacon_update(bool first, bool iv_update, uint32_t iv_index)
 
 	/* Enforcement of 96 hour and 192 hour IVU time windows */
 	if (iv_update && !net.iv_update) {
-		bt_shell_printf("iv_upd_state = IV_UPD_UPDATING\n");
+		printf("iv_upd_state = IV_UPD_UPDATING\n");
 		net.iv_upd_state = IV_UPD_UPDATING;
 		/* TODO: Start timer to enforce IV Update parameters */
 	} else if (first) {
@@ -967,11 +967,11 @@ static void beacon_update(bool first, bool iv_update, uint32_t iv_index)
 		else
 			net.iv_upd_state = IV_UPD_NORMAL;
 
-		bt_shell_printf("iv_upd_state = IV_UPD_%s\n",
+		printf("iv_upd_state = IV_UPD_%s\n",
 				iv_update ? "UPDATING" : "NORMAL");
 
 	} else if (iv_update && iv_index != net.iv_index) {
-		bt_shell_printf("IV Update too soon -- Rejecting\n");
+		printf("IV Update too soon -- Rejecting\n");
 		return;
 	}
 
@@ -1060,7 +1060,7 @@ static bool process_beacon(uint8_t *data, uint8_t size)
 
 	if ((net.iv_index + IV_IDX_DIFF_RANGE < iv_index) ||
 			(iv_index < net.iv_index)) {
-		bt_shell_printf("iv index outside range\n");
+		printf("iv index outside range\n");
 		return false;
 	}
 
@@ -1076,7 +1076,7 @@ static bool process_beacon(uint8_t *data, uint8_t size)
 
 	if (iv_update && (net.iv_upd_state > IV_UPD_UPDATING)) {
 		if (iv_index != net.iv_index) {
-			bt_shell_printf("Update too soon -- Rejecting\n");
+			printf("Update too soon -- Rejecting\n");
 		}
 		/* Silently ignore old beacons */
 		return true;
@@ -1198,7 +1198,7 @@ static void send_pkt_cmplt(DBusMessage *message, void *user_data)
 		g_free(pkt);
 	} else {
 		/* This is a serious error, and probable memory leak */
-		bt_shell_printf("ERR: send_pkt_cmplt %p not head of queue\n", pkt);
+		printf("ERR: send_pkt_cmplt %p not head of queue\n", pkt);
 	}
 
 	l = g_list_first(net.pkt_out);
@@ -1381,7 +1381,7 @@ static bool proxy_ctl_rxed(uint16_t net_idx, uint32_t iv_index,
 				return false;
 
 			net.blacklist = !!(trans[1] == BLACKLIST_FILTER);
-			bt_shell_printf("Proxy %slist filter length: %d\n",
+			printf("Proxy %slist filter length: %d\n",
 					net.blacklist ? "Black" : "White",
 					get_be16(trans + 2));
 
@@ -1404,7 +1404,7 @@ static bool ctl_rxed(uint16_t net_idx, uint32_t iv_index,
 	if (trans[0] == NET_OP_HEARTBEAT) {
 		uint16_t feat = get_be16(trans + 2);
 
-		bt_shell_printf("HEARTBEAT src: %4.4x dst: %4.4x \
+		printf("HEARTBEAT src: %4.4x dst: %4.4x \
 				TTL: %2.2x feat: %s%s%s%s\n",
 				src, dst, trans[1],
 				(feat & MESH_FEATURE_RELAY) ? "relay " : "",
@@ -1414,7 +1414,7 @@ static bool ctl_rxed(uint16_t net_idx, uint32_t iv_index,
 		return true;
 	}
 
-	bt_shell_printf("unrecognized control message src:%4.4x dst:%4.4x len:%d\n",
+	printf("unrecognized control message src:%4.4x dst:%4.4x len:%d\n",
 			src, dst, len);
 	print_byte_array("msg: ", trans, len);
 	return false;
