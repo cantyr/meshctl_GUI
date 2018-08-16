@@ -14,6 +14,7 @@ JNI_SETUP = javac -h . meshgui/Home.java
 SRCS = jni/Home.c # source files
 SRCS += $(BLUEZ_SRCS)
 OBJS = $(SRCS:.c=.o)
+CLASSES = meshgui/*.class
 
 .PHONY: all
 all: meshgui_Home.h ${TARGET_LIB}
@@ -30,4 +31,4 @@ $(SRCS:.c=.d):%.d:%.c
 
 .PHONY: clean
 clean:
-	-${RM} ${TARGET_LIB} ${OBJS} $(SRCS:.c=.d) meshgui_Home.h
+	-${RM} ${TARGET_LIB} ${OBJS} $(SRCS:.c=.d) meshgui_Home.h ${CLASSES}
