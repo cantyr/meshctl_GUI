@@ -282,8 +282,6 @@ bool lightness_client_init(uint8_t ele)
 	if (!node_local_model_register(ele, LIGHTNESS_CLIENT_MODEL_ID,
 					&client_cbs, NULL))
 		return false;
-
-	bt_shell_add_submenu(&lightness_menu);
-
+	
 	return true;
 }

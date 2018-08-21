@@ -284,7 +284,5 @@ bool ctl_client_init(uint8_t ele)
 					&client_cbs, NULL))
 		return false;
 
-	bt_shell_add_submenu(&ctl_menu);
-
 	return true;
 }

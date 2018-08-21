@@ -40,6 +40,7 @@
 #include "bluetooth/bluetooth.h"
 
 #include <glib.h>
+//#include <gio/gio.h>
 
 #include "lib/bluetooth.h"
 #include "lib/uuid.h"

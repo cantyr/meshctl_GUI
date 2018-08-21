@@ -283,7 +283,5 @@ bool level_client_init(uint8_t ele)
 					&client_cbs, NULL))
 		return false;
 
-	bt_shell_add_submenu(&level_menu);
-
 	return true;
 }
