@@ -786,7 +786,7 @@ static GDBusProxy *find_proxy_by_address(GList *source, const char *address)
 static gboolean check_default_ctrl(void)
 {
 	if (!default_ctrl) {
-		bt_shell_printf("No default controller available\n");
+		printf("No default controller available\n");
 		return FALSE;
 	}
 
@@ -1105,13 +1105,13 @@ static void start_discovery_reply(DBusMessage *message, void *user_data)
 	dbus_error_init(&error);
 
 	if (dbus_set_error_from_message(&error, message) == TRUE) {
-		bt_shell_printf("Failed to %s discovery: %s\n",
+		printf("Failed to %s discovery: %s\n",
 				enable == TRUE ? "start" : "stop", error.name);
 		dbus_error_free(&error);
 		return bt_shell_noninteractive_quit(EXIT_FAILURE);
 	}
 
-	bt_shell_printf("Discovery %s\n", enable ? "started" : "stopped");
+	printf("Discovery %s\n", enable ? "started" : "stopped");
 	/* Leave the discovery running even on noninteractive mode */
 }
 

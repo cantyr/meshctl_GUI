@@ -16,6 +16,7 @@ JNIEXPORT void JNICALL Java_meshgui_Home_security
 JNIEXPORT void JNICALL Java_meshgui_Home_discoverUnprovisioned
 (JNIEnv *env, jclass class, jint onoff) {
 	printf("Discover Unprovisoned %d\n", onoff );
+	cmd_scan_unprovisioned( onoff );
 }
 
 JNIEXPORT void JNICALL Java_meshgui_Home_provision

@@ -87,7 +87,6 @@ static void shell_print_menu(void);
 
 static void cmd_version(int argc, char *argv[])
 {
-	bt_shell_printf("Version %s\n", VERSION);
 
 	return bt_shell_noninteractive_quit(EXIT_SUCCESS);
 }
@@ -957,7 +956,7 @@ static void usage(int argc, char **argv, const struct bt_shell_opt *opt)
 {
 	unsigned int i;
 
-	printf("%s ver %s\n", argv[0], VERSION);
+	//printf("%s ver %s\n", argv[0], VERSION);
 	printf("Usage:\n"
 		"\t%s [options]\n", argv[0]);
 
@@ -992,7 +991,7 @@ void bt_shell_init(int argc, char **argv, const struct bt_shell_opt *opt)
 	while ((c = getopt_long(argc, argv, optstr, options, &index)) != -1) {
 		switch (c) {
 		case 'v':
-			printf("%s: %s\n", argv[0], VERSION);
+			//printf("%s: %s\n", argv[0], VERSION);
 			exit(EXIT_SUCCESS);
 			return;
 		case 'h':

@@ -36,3 +36,6 @@ BLUEZ_SRCS += blueZ/mesh/light-ctl-model.c
 BLUEZ_SRCS += blueZ/mesh/light-lightness-model.c
 BLUEZ_SRCS += blueZ/mesh/time-model.c
 BLUEZ_SRCS += blueZ/mesh/util.c
+BLUEZ_SRCS += blueZ/client/main.c
+BLUEZ_SRCS += blueZ/src/shared/mainloop-glib.c
+BLUEZ_SRCS += blueZ/lib/uuid.c

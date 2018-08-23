@@ -5,9 +5,9 @@ extern "C" {
 #endif
 
 int mesh_init(void);
-/*void cmd_security(int);
+//void cmd_security(int);
 void cmd_scan_unprovisioned(int);
-void cmd_start_prov(const char []);
+/*void cmd_start_prov(const char []);
 void cmd_appkey_add(int);
 void cmd_bind(int, int, int);
 void onoff_set(int);

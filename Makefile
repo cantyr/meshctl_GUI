@@ -31,4 +31,4 @@ $(SRCS:.c=.d):%.d:%.c
 
 .PHONY: clean
 clean:
-	-${RM} ${TARGET_LIB} ${OBJS} $(SRCS:.c=.d) meshgui_Home.h ${CLASSES}
+	-${RM} ${TARGET_LIB} ${OBJS} $(SRCS:.c=.d) meshgui_Home.h ${CLASSES} *.log
