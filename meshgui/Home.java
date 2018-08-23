@@ -50,6 +50,14 @@ public class Home extends javax.swing.JFrame {
 
     public static native void level(int level);
 
+    /**
+     * * C Callback Stuff **
+     */
+
+
+    /**
+    ** GUI STUFF **
+    */
     public ArrayList<String> provisionedDevices = new ArrayList<>();
     public DefaultListModel<String> deviceListModel;
     public DefaultListModel<String> groupsListModel;
@@ -180,6 +188,7 @@ public class Home extends javax.swing.JFrame {
         new DiscoverUnprovisionedWindow(this).setVisible(true);
         Home home = new Home();
         home.discoverUnprovisioned(1);
+
     }//GEN-LAST:event_scanDevicesBtnMouseClicked
 
     private void groupsBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupsBtnMouseClicked
