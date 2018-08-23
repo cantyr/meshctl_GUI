@@ -193,14 +193,11 @@ static void proxy_leak(gpointer data)
 
 static void connect_handler(DBusConnection *connection, void *user_data)
 {
-	printf("connect_handler\n");
+	//printf("connect_handler\n");
 }
 
 static void disconnect_handler(DBusConnection *connection, void *user_data)
 {
-	bt_shell_detach();
-
-	printf("disconnect_handler\n");
 
 	g_list_free_full(ctrl_list, proxy_leak);
 	ctrl_list = NULL;
@@ -635,7 +632,8 @@ done:
 
 	/* If disconnected, return to main menu */
 	if (proxy == NULL)
-		bt_shell_set_menu(&main_menu);
+		printf("BT discconnected\n");
+		//bt_shell_set_menu(&main_menu);
 }
 
 static void connect_reply(DBusMessage *message, void *user_data)
@@ -985,18 +983,14 @@ static void proxy_added(GDBusProxy *proxy, void *user_data)
 {
 	const char *interface;
 
-	printf("proxy_added\n");
-
 	interface = g_dbus_proxy_get_interface(proxy);
 
 	if (!strcmp(interface, "org.bluez.Device1")) {
-		printf("update_device_info\n");
 		update_device_info(proxy);
 
 	} else if (!strcmp(interface, "org.bluez.Adapter1")) {
 
 		adapter_added(proxy);
-		printf("adapter_added\n");
 
 	} else if (!strcmp(interface, "org.bluez.GattService1") &&
 						service_is_mesh(proxy, NULL)) {
@@ -1450,8 +1444,6 @@ static void set_discovery_filter_setup(DBusMessageIter *iter, void *user_data)
 	struct set_discovery_filter_args *args = user_data;
 	DBusMessageIter dict;
 
-	printf("set_discovery_filter_setup\n");
-
 	dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY,
 				DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
 				DBUS_TYPE_STRING_AS_STRING
@@ -1518,8 +1510,6 @@ static void set_scan_filter_commit(void)
 	if (check_default_ctrl() == FALSE)
 		printf("EXIT FAILURE - check_default_ctrl == FALSE: mesh/main.c line 1510\n");
 
-
-	printf("before g_dbus if statement\n");
 	if (g_dbus_proxy_method_call(default_ctrl->proxy, "SetDiscoveryFilter",
 		set_discovery_filter_setup, set_discovery_filter_reply,
 		&args, NULL) == FALSE) {
@@ -1529,17 +1519,13 @@ static void set_scan_filter_commit(void)
 
 static void set_scan_filter_uuids(char *filters[])
 {
-	printf("Start set_scan_filter_uuids\n");
 	g_strfreev(filtered_scan_uuids);
 	filtered_scan_uuids = NULL;
 	filtered_scan_uuids_len = 0;
 
 	if (!filters) {
-		printf("!filters\n");
 		goto commit;
 	}
-
-	printf("After !filters if\n");
 
 	filtered_scan_uuids = g_strdupv(filters);
 	if (!filtered_scan_uuids) {
@@ -1549,7 +1535,6 @@ static void set_scan_filter_uuids(char *filters[])
 	filtered_scan_uuids_len = g_strv_length(filtered_scan_uuids);
 
 commit:
-	printf("commit\n");
 	set_scan_filter_commit();
 }
 
@@ -1559,13 +1544,8 @@ void cmd_scan_unprovisioned(int onoff)
 	char *filters[] = { MESH_PROV_SVC_UUID, NULL };
 	const char *method;
 
-	printf("default_ctrl: cmd_scan_unprovisioned%x\n", default_ctrl);
-
-	printf("before ifs\n");
-
 	if (check_default_ctrl() == FALSE)
 		printf("check_default_ctrl() failed\n");
-	printf("after check_default_ctrl()\n");
 	if (enable == TRUE) {
 		discover_mesh = false;
 		set_scan_filter_uuids(filters);
@@ -1574,8 +1554,6 @@ void cmd_scan_unprovisioned(int onoff)
 		method = "StopDiscovery";
 	}
 
-	printf("after first ifs, before g_dbus_proxy_method_call\n");
-
 	if (g_dbus_proxy_method_call(default_ctrl->proxy, method,
 			NULL, start_discovery_reply,
 			GUINT_TO_POINTER(enable), NULL) == FALSE) {
@@ -1583,8 +1561,6 @@ void cmd_scan_unprovisioned(int onoff)
 		enable == TRUE ? "start" : "stop");
 		printf("g_dbus_proxy_method_call failed\n");
 	}
-
-	printf("cmd_scan_unprovisioned end\n");
 }
 
 static void cmd_info(int argc, char *argv[])
@@ -1916,11 +1892,7 @@ int mesh_init(void)
 	int len;
 	int extra;
 
-	printf("Starting mesh_init\n");
-
 	mainloop_init();
-
-	printf("mainloop_init() called\n");
 
 	if (!mesh_config_dir) {
 		printf("Local config directory not provided.\n");
@@ -1947,8 +1919,6 @@ int mesh_init(void)
 	if (!mesh_prov_db_filename) {
 		goto fail;
 	}
-
-	printf("JSON files loaded\n");
 
 	sprintf(mesh_local_config_filename, "%s", mesh_config_dir);
 
@@ -1993,8 +1963,6 @@ int mesh_init(void)
 
 	g_dbus_client_set_ready_watch(client, client_ready, NULL);
 
-	printf("gdbus configuration complete\n");
-
 	if (!config_client_init())
 		printf("Failed to initialize mesh configuration client\n");
 
@@ -2020,8 +1988,6 @@ int mesh_init(void)
 		printf("Failed to initialize mesh Time client\n");
 
 	status = mainloop_run();
-
-	printf("Loading all models complete\n");
 
 	g_dbus_client_unref(client);
 

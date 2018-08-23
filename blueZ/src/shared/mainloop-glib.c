@@ -36,6 +36,7 @@
 #include <glib.h>
 
 #include "mainloop.h"
+#include "mesh_lib.h"
 
 static GMainLoop *main_loop;
 static int exit_status;

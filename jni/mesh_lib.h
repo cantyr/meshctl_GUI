@@ -15,6 +15,7 @@ void hsl_set(int, int, int);
 void ctl_set(int, int);
 void lightness_set(int);
 void level_set(int);*/
+void mainloop_exit_success();
 
 #ifdef __cplusplus
 }

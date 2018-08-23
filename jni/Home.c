@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "mesh_lib.h"
 #include "../meshgui_Home.h"
+#include <jni.h>
 
 JNIEXPORT void JNICALL Java_meshgui_Home_init
 (JNIEnv *env, jclass class) {
@@ -43,6 +44,12 @@ JNIEXPORT void JNICALL Java_meshgui_Home_removeNode
   (*env)->ReleaseStringUTFChars(env, device, str);
 }
 
+JNIEXPORT void JNICALL Java_meshgui_Home_endMainloop
+  (JNIEnv *env, jclass class) {
+    printf("ending mainloop()!!\n");
+    mainloop_exit_success();
+}
+
 JNIEXPORT void JNICALL Java_meshgui_Home_onoff
 (JNIEnv *env, jclass class, jint onoff) {
   	printf("Sending onoff value of  %d\n", onoff );
@@ -66,4 +73,18 @@ JNIEXPORT void JNICALL Java_meshgui_Home_lightness
 JNIEXPORT void JNICALL Java_meshgui_Home_level
 (JNIEnv *env, jclass class, jint lvl) {
     printf("Sending Level value of %d\n", lvl );
+}
+
+JNIEXPORT void JNICALL Java_meshgui_Home_nativecall
+(JNIEnv *env, jobject foo_obj) {
+  // Get the class from the object we got passed in
+  jclass cls_foo = (*env)->GetObjectClass(env, foo_obj);
+
+  // get the method IDs from that class
+  jmethodID mid_callback        = (*env)->GetMethodID      (env, cls_foo, "callback"       , "()V");
+  jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
+
+  // then call them.
+  (*env)->CallVoidMethod      (env, foo_obj, mid_callback);
+  (*env)->CallStaticVoidMethod(env, cls_foo, mid_callback_static);
 }

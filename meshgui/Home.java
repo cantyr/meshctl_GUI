@@ -37,6 +37,8 @@ public class Home extends javax.swing.JFrame {
 
     public static native void removeNode(String device);
 
+    public static native void endMainloop();
+
     /**
      * * JNI Control methods **
      */
@@ -53,8 +55,8 @@ public class Home extends javax.swing.JFrame {
     /**
      * * C Callback Stuff **
      */
-
-
+    private native void nativecall();
+    
     /**
     ** GUI STUFF **
     */
@@ -83,6 +85,16 @@ public class Home extends javax.swing.JFrame {
         deviceListModel = new DefaultListModel<>();
         groupsListModel = new DefaultListModel<>();
         groupsDeviceListModel = new DefaultListModel<>();
+        this.addWindowListener(new java.awt.event.WindowAdapter()
+        {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e)
+            {
+                endMainloop();
+                System.out.println("Closed");
+                e.getWindow().dispose();
+            }
+        });
         initComponents();
     }
 
@@ -101,8 +113,6 @@ public class Home extends javax.swing.JFrame {
         provisionedDevicesScrollPane = new javax.swing.JScrollPane();
         provisionedDevicesList = new javax.swing.JList<>();
         groupsBtn = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         bluetoothMeshLabel.setText("LEDVANCE Bluetooth Mesh");
 
@@ -188,8 +198,16 @@ public class Home extends javax.swing.JFrame {
         new DiscoverUnprovisionedWindow(this).setVisible(true);
         Home home = new Home();
         home.discoverUnprovisioned(1);
-
+        home.nativecall();
     }//GEN-LAST:event_scanDevicesBtnMouseClicked
+
+    public void callback() {
+        System.out.println("callback");
+    }
+
+    public static void callback_static() {
+        System.out.println("static callback");
+    }
 
     private void groupsBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupsBtnMouseClicked
         new GroupsWindow(this).setVisible(true);
@@ -224,8 +242,8 @@ public class Home extends javax.swing.JFrame {
         //</editor-fold>
         Home home = new Home();
         home.setVisible(true);
-        home.init();
         home.security(0);
+        home.init();
 
     }
 
@@ -272,6 +290,8 @@ public class Home extends javax.swing.JFrame {
             cancelBtn.setText("Cancel");
             cancelBtn.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    Home home = new Home();
+                    home.discoverUnprovisioned(0);
                     dispose();
                 }
             });
@@ -307,7 +327,7 @@ public class Home extends javax.swing.JFrame {
             );
 
             this.pack();
-            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
             this.setAlwaysOnTop(true);
             this.setLocationRelativeTo(parent);
         }
@@ -392,7 +412,7 @@ public class Home extends javax.swing.JFrame {
             );
 
             this.pack();
-            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
             this.setAlwaysOnTop(true);
             this.setLocationRelativeTo(parent);
         }
@@ -523,7 +543,7 @@ public class Home extends javax.swing.JFrame {
             );
 
             pack();
-            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
             this.setAlwaysOnTop(true);
         }
     }
@@ -717,7 +737,7 @@ public class Home extends javax.swing.JFrame {
             }
 
             pack();
-            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
             this.setAlwaysOnTop(true);
         }
     }
@@ -780,7 +800,7 @@ public class Home extends javax.swing.JFrame {
 
             this.pack();
 
-            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
             this.setAlwaysOnTop(
                     true);
