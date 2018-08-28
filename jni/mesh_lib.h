@@ -4,6 +4,15 @@
 extern "C" {
 #endif
 
+#include <jni.h>
+#include <semaphore.h>
+#include <pthread.h>
+
+extern char *stringBuff;
+extern pthread_mutex_t eventLock;
+extern sem_t eventEmpty;
+extern sem_t eventFull;
+
 int mesh_init(void);
 //void cmd_security(int);
 void cmd_scan_unprovisioned(int);

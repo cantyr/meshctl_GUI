@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JWindow;
 
@@ -55,15 +56,18 @@ public class Home extends javax.swing.JFrame {
     /**
      * * C Callback Stuff **
      */
-    private native void nativecall();
+    private native void eventCallback();
     
     /**
     ** GUI STUFF **
     */
     public ArrayList<String> provisionedDevices = new ArrayList<>();
+    public ArrayList<String> unprovisionedDevicesArrayList = new ArrayList<>();
+    public javax.swing.DefaultListModel unprovisionedDevicesListModel;
     public DefaultListModel<String> deviceListModel;
     public DefaultListModel<String> groupsListModel;
     public DefaultListModel<String> groupsDeviceListModel;
+    public javax.swing.JList unprovisionedDevicesList;
     ImageIcon colorWheel = new ImageIcon("colorwheel_only.png");
     ImageIcon cctWheel = new ImageIcon();
 
@@ -82,6 +86,9 @@ public class Home extends javax.swing.JFrame {
      * Creates new form GUI
      */
     public Home() {
+
+        unprovisionedDevicesListModel = new DefaultListModel();
+        unprovisionedDevicesList = new JList(unprovisionedDevicesListModel);
         deviceListModel = new DefaultListModel<>();
         groupsListModel = new DefaultListModel<>();
         groupsDeviceListModel = new DefaultListModel<>();
@@ -198,15 +205,25 @@ public class Home extends javax.swing.JFrame {
         new DiscoverUnprovisionedWindow(this).setVisible(true);
         Home home = new Home();
         home.discoverUnprovisioned(1);
-        home.nativecall();
+        home.eventCallback();
     }//GEN-LAST:event_scanDevicesBtnMouseClicked
 
-    public void callback() {
-        System.out.println("callback");
+    public void discoverUnprovisionedCallback(String uuid, String name) {
+        String newName = name;
+        System.out.println("callback: " + uuid + ", " + newName + "\n");
+        unprovisionedDevicesListModel.addElement(newName);
+        System.out.println(unprovisionedDevicesListModel.toString() );
     }
 
     public static void callback_static() {
         System.out.println("static callback");
+    }
+    
+    private static void populateList(javax.swing.JList<String> list, String val)
+    {
+        DefaultListModel model = (DefaultListModel)list.getModel();
+        model.removeAllElements();
+        model.addElement(val);
     }
 
     private void groupsBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupsBtnMouseClicked
@@ -246,32 +263,20 @@ public class Home extends javax.swing.JFrame {
         home.init();
 
     }
-
     class DiscoverUnprovisionedWindow extends javax.swing.JWindow {
 
         public DiscoverUnprovisionedWindow(JFrame parent) {
             super(parent);
             unprovisionedDevicesLabel = new javax.swing.JLabel();
-            unprovisionedDevicesScrollPane = new javax.swing.JScrollPane();
-            unprovisionedDevicesList = new javax.swing.JList<>();
+            unprovisionedDevicesScrollPane = new javax.swing.JScrollPane(unprovisionedDevicesList);
             cancelBtn = new javax.swing.JButton();
 
-            unprovisionedDevicesLabel.setText("Unprovisioned Devices");
-
-            unprovisionedDevicesList.setModel(new javax.swing.AbstractListModel<String>() {
-                String[] strings = {"Device1    +Provison", "Device2    +Provison", "Device3    +Provison", "Device4    +Provison", "Device5    +Provison"};
-
-                public int getSize() {
-                    return strings.length;
-                }
-
-                public String getElementAt(int i) {
-                    return strings[i];
-                }
-            });
+            unprovisionedDevicesList.setModel(unprovisionedDevicesListModel);
+            unprovisionedDevicesListModel.addElement("hey");
+            System.out.println(unprovisionedDevicesListModel.toString() );
             unprovisionedDevicesList.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    String device = unprovisionedDevicesList.getSelectedValue();
+                    String device = unprovisionedDevicesList.getSelectedValue().toString();
                     device = device.substring(0, device.indexOf(" "));
                     deviceListModel.addElement(device);
                     Home home = new Home();
@@ -285,7 +290,7 @@ public class Home extends javax.swing.JFrame {
                     dispose();
                 }
             });
-            unprovisionedDevicesScrollPane.setViewportView(unprovisionedDevicesList);
+            //unprovisionedDevicesScrollPane.setViewportView(unprovisionedDevicesList);
 
             cancelBtn.setText("Cancel");
             cancelBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -859,6 +864,19 @@ public class Home extends javax.swing.JFrame {
         return devicesListModel;
     }
 
+    public static int square(int input){
+        int output = input * input;
+        return output;
+    }
+    public static int power(int input, int exponent){
+        int output,i;
+        output=1;
+        for(i=0;i<exponent;i++){
+            output *= input;
+        }
+        return output;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bluetoothMeshLabel;
     private javax.swing.JButton groupsBtn;
@@ -868,7 +886,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton scanDevicesBtn;
     // End of variables declaration//GEN-END:variables
     private javax.swing.JLabel unprovisionedDevicesLabel;
-    private javax.swing.JList<String> unprovisionedDevicesList;
+    
     private javax.swing.JScrollPane unprovisionedDevicesScrollPane;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JSlider brightnessSlider;

@@ -31,6 +31,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <wordexp.h>
+#include <string.h>
+#include <semaphore.h>
+#include <pthread.h>
 
 #include <inttypes.h>
 #include <ctype.h>
@@ -68,7 +71,9 @@
 #include "mesh/light-lightness-model.h"
 #include "mesh/light-level-model.h"
 
- #include "mesh_lib.h"
+#include "mesh_lib.h"
+ #include "../../meshgui_Home.h"
+#include <jni.h>
 
 /* String display constants */
 #define COLORED_NEW	COLOR_GREEN "NEW" COLOR_OFF
@@ -245,6 +250,12 @@ static void print_device(GDBusProxy *proxy, const char *description)
 		dbus_message_iter_get_basic(&iter, &name);
 	else
 		name = "<unknown>";
+
+	sem_wait(&eventEmpty);
+	pthread_mutex_lock(&eventLock);
+    memcpy(stringBuff, name, strlen(name));
+	pthread_mutex_unlock(&eventLock);
+	sem_post(&eventFull);
 
 	printf("%s%s%sDevice %s %s\n",
 				description ? "[" : "",
@@ -1540,6 +1551,7 @@ commit:
 
 void cmd_scan_unprovisioned(int onoff)
 {
+
 	dbus_bool_t enable = (dbus_bool_t) onoff;
 	char *filters[] = { MESH_PROV_SVC_UUID, NULL };
 	const char *method;
@@ -1892,6 +1904,22 @@ int mesh_init(void)
 	int len;
 	int extra;
 
+	stringBuff = g_malloc(512);
+	memset(stringBuff, 0, 512);
+	pthread_mutex_t Mutex;
+	pthread_mutexattr_t Attr;
+
+	pthread_mutexattr_init(&Attr);
+	pthread_mutexattr_settype(&Attr, PTHREAD_MUTEX_RECURSIVE);
+	pthread_mutex_init(&Mutex, &Attr);
+
+	int retEmpty;
+	int retFull;
+	retEmpty = sem_init(&eventEmpty, 0, 1); 
+	retFull = sem_init(&eventFull, 0, 0); 
+
+	printf("stringBuff: %s\n", stringBuff);
+
 	mainloop_init();
 
 	if (!mesh_config_dir) {
@@ -1998,6 +2026,11 @@ int mesh_init(void)
 	g_list_free(char_list);
 	g_list_free(service_list);
 	g_list_free_full(ctrl_list, proxy_leak);
+	g_free(stringBuff);
+
+	pthread_mutex_destroy(&Mutex);
+	sem_destroy(&eventFull);
+	sem_destroy(&eventEmpty);
 
 	printf("mesh_init complete\n");
 

@@ -16,6 +16,7 @@ BLUEZ_LIBS += gio-2.0
 BLUEZ_LIBS += gthread-2.0
 BLUEZ_LIBS += gobject-2.0
 BLUEZ_LIBS += readline
+BLUEZ_LIBS += pthread
 
 BLUEZ_SRCS = blueZ/gdbus/client.c
 BLUEZ_SRCS += blueZ/gdbus/mainloop.c

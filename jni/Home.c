@@ -2,6 +2,14 @@
 #include "mesh_lib.h"
 #include "../meshgui_Home.h"
 #include <jni.h>
+#include <semaphore.h>
+#include <pthread.h>
+#include <string.h>
+
+char *stringBuff;
+pthread_mutex_t eventLock;
+sem_t eventEmpty;
+sem_t eventFull;
 
 JNIEXPORT void JNICALL Java_meshgui_Home_init
 (JNIEnv *env, jclass class) {
@@ -75,16 +83,29 @@ JNIEXPORT void JNICALL Java_meshgui_Home_level
     printf("Sending Level value of %d\n", lvl );
 }
 
-JNIEXPORT void JNICALL Java_meshgui_Home_nativecall
+JNIEXPORT void JNICALL Java_meshgui_Home_eventCallback
 (JNIEnv *env, jobject foo_obj) {
+
+  printf("in eventCallback()\n");
   // Get the class from the object we got passed in
   jclass cls_foo = (*env)->GetObjectClass(env, foo_obj);
 
-  // get the method IDs from that class
-  jmethodID mid_callback        = (*env)->GetMethodID      (env, cls_foo, "callback"       , "()V");
-  jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
+  char name[100];
+  char uuid[20];
 
+  sem_wait(&eventFull);
+  pthread_mutex_lock(&eventLock);
+  memcpy(name, stringBuff, strlen(stringBuff));
+  pthread_mutex_unlock(&eventLock);
+  sem_post(&eventEmpty);
+
+  jstring juuid = (*env)->NewStringUTF(env,"uuid");
+  jstring jname = (*env)->NewStringUTF(env, name);
+
+  // get the method IDs from that class
+  jmethodID mid_callback        = (*env)->GetMethodID      (env, cls_foo, "discoverUnprovisionedCallback"       , "(Ljava/lang/String;Ljava/lang/String;)V");
+  //jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
   // then call them.
-  (*env)->CallVoidMethod      (env, foo_obj, mid_callback);
-  (*env)->CallStaticVoidMethod(env, cls_foo, mid_callback_static);
+  (*env)->CallVoidMethod      (env, foo_obj, mid_callback, juuid, jname);
+  //(*env)->CallStaticVoidMethod(env, cls_foo, mid_callback_static);
 }
