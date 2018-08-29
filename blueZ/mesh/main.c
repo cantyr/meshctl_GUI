@@ -1789,14 +1789,14 @@ static void mesh_prov_done(void *user_data, int status)
 	disconnect_device(prov_disconn_reply, node);
 }
 
-static void cmd_start_prov(int argc, char *argv[])
+void cmd_start_prov(char *uuid)
 {
 	GDBusProxy *proxy;
 	struct mesh_device *dev;
 	struct mesh_node *node;
 	int len;
 
-	len = strlen(argv[1]);
+	len = strlen(uuid);
 	if ( len > 32 || len % 2) {
 		printf("Incorrect UUID size %d\n", len);
 	}
@@ -1804,11 +1804,11 @@ static void cmd_start_prov(int argc, char *argv[])
 	disconnect_device(NULL, NULL);
 
 	memset(connection.dev_uuid, 0, 16);
-	str2hex(argv[1], len, connection.dev_uuid, len/2);
+	str2hex(uuid, len, connection.dev_uuid, len/2);
 
 	node = node_find_by_uuid(connection.dev_uuid);
 	if (!node) {
-		printf("Device with UUID %s not found.\n", argv[1]);
+		printf("Device with UUID %s not found.\n", uuid);
 		printf("Stale services? Remove device and "
 						"re-discover\n");
 		return ;

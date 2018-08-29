@@ -306,7 +306,7 @@ public class Home extends javax.swing.JFrame {
             unprovisionedDevicesList.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     String device = unprovisionedDevicesList.getSelectedValue().toString();
-                    device = device.substring(device.indexOf(": ") + 1, device.length());
+                    device = device.substring(device.indexOf(": ") + 2, device.length());
                     deviceListModel.addElement(device);
                     home.provision(device);
                     /*home.appKeyAdd(1);

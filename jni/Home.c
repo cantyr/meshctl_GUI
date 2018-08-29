@@ -32,10 +32,10 @@ JNIEXPORT void JNICALL Java_meshgui_Home_discoverUnprovisioned
 
 JNIEXPORT void JNICALL Java_meshgui_Home_provision
 (JNIEnv *env, jclass class, jstring uuid) {
-	const char *str= (*env)->GetStringUTFChars(env,uuid,0);
+	char *str= (*env)->GetStringUTFChars(env,uuid,0);
 	printf("Provision %s\n", str);
+    cmd_start_prov(str);
 	(*env)->ReleaseStringUTFChars(env, uuid, str);
-    //cmd_start_prov(str);
 }
 
 JNIEXPORT void JNICALL Java_meshgui_Home_appKeyAdd
@@ -93,10 +93,10 @@ JNIEXPORT void JNICALL Java_meshgui_Home_eventCallback
   jclass cls_foo = (*env)->GetObjectClass(env, foo_obj);
 
   char name[100];
-  char uuid[33];
+  char uuid[32];
   static jmethodID mid_callbackDevDetails;
 
-  memset(uuid, 0, 33);
+  memset(uuid, 0, 32);
   memset(name, 0, 100);
 
 
