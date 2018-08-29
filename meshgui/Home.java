@@ -1,7 +1,7 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+// * and open the template in the editor.
  */
 package meshgui;
 
@@ -20,6 +20,13 @@ import javax.swing.JWindow;
  * @author ledvance
  */
 public class Home extends javax.swing.JFrame {
+
+    public enum javaEvent {
+        NO_EVENT,
+        NAME,
+        UUID,
+        END_OF_LIST
+    }
 
     /**
      * * JNI Configure methods **
@@ -58,7 +65,7 @@ public class Home extends javax.swing.JFrame {
     /**
      * * C Callback Stuff **
      */
-    private native void eventCallback();
+    public native void eventCallback();
 
     /**
      ** GUI STUFF **
@@ -71,6 +78,7 @@ public class Home extends javax.swing.JFrame {
     public javax.swing.JList unprovisionedDevicesList;
     ImageIcon colorWheel = new ImageIcon("colorwheel_only.png");
     ImageIcon cctWheel = new ImageIcon();
+    public String deviceNameCallback;
 
     static {
         try {
@@ -208,16 +216,34 @@ public class Home extends javax.swing.JFrame {
     public void scanDevicesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scanDevicesBtnMouseClicked
         window.setVisible(true);
         home.discoverUnprovisioned(1);
-        home.eventCallback();
+        ThreadRunnable myRunnable = new ThreadRunnable(home);
+        Thread t = new Thread(myRunnable);
+        t.start();
     }//GEN-LAST:event_scanDevicesBtnMouseClicked
 
-    public void discoverUnprovisionedCallback(String uuid, String name) {
-        String newName = name;
-        System.out.println("callback: " + uuid + ", " + newName + "\n");
-        window.getUnprovisionedListModel().addElement(newName);
-       
-        //unprovisionedDevicesListModel.addElement(newName);
-        System.out.println("ListModel in Callback: " + window.getUnprovisionedListModel().toString());
+    public void discoverUnprovisionedCallback(int key, String str) {
+        System.out.println("callback: " + key + ", " + str + "\n");
+        
+
+        switch ( javaEvent.values()[key] )
+        {
+            case NAME:
+                deviceNameCallback = str;
+                //Do Device class stuff here
+//                Device device = new Device( "uuid", deviceName );
+//                System.out.println( "Created Device with name: " + device.getName() + " and uuid: " + device.getUUID() );
+//                window.getUnprovisionedListModel().addElement(device.getDetails());
+                break;
+            case UUID:
+                Device device = new Device( str, deviceNameCallback );
+                System.out.println( "Created Device with name: " + device.getName() + " and uuid: " + device.getUUID() );
+                window.getUnprovisionedListModel().addElement(device.getDetails());
+                //Do Device class stuff here
+                break;
+            default:
+                break;
+        }
+        
     }
 
     public static void callback_static() {
@@ -280,15 +306,15 @@ public class Home extends javax.swing.JFrame {
             unprovisionedDevicesList.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     String device = unprovisionedDevicesList.getSelectedValue().toString();
-                    device = device.substring(0, device.indexOf(" "));
+                    device = device.substring(device.indexOf(": ") + 1, device.length());
                     deviceListModel.addElement(device);
                     home.provision(device);
-                    home.appKeyAdd(1);
+                    /*home.appKeyAdd(1);
                     home.appKeyBind(0, 1, 1000);
                     home.appKeyBind(0, 1, 1301);
                     home.appKeyBind(0, 1, 1304);
                     home.appKeyBind(0, 1, 1307);
-                    home.appKeyBind(0, 1, 1308);
+                    home.appKeyBind(0, 1, 1308);*/
                     dispose();
                 }
             });

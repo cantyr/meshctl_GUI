@@ -11,6 +11,7 @@ pthread_mutex_t eventLock;
 sem_t eventEmpty;
 sem_t eventFull;
 uint8_t exitEventLoop;
+enum eventKey javaEvent = NO_EVENT;
 
 JNIEXPORT void JNICALL Java_meshgui_Home_init
 (JNIEnv *env, jclass class) {
@@ -34,6 +35,7 @@ JNIEXPORT void JNICALL Java_meshgui_Home_provision
 	const char *str= (*env)->GetStringUTFChars(env,uuid,0);
 	printf("Provision %s\n", str);
 	(*env)->ReleaseStringUTFChars(env, uuid, str);
+    //cmd_start_prov(str);
 }
 
 JNIEXPORT void JNICALL Java_meshgui_Home_appKeyAdd
@@ -91,9 +93,12 @@ JNIEXPORT void JNICALL Java_meshgui_Home_eventCallback
   jclass cls_foo = (*env)->GetObjectClass(env, foo_obj);
 
   char name[100];
+  char uuid[33];
+  static jmethodID mid_callbackDevDetails;
+
+  memset(uuid, 0, 33);
   memset(name, 0, 100);
-  char uuid[20];
-  memset(uuid, 0, 20);
+
 
   exitEventLoop = 0;
 
@@ -102,14 +107,32 @@ JNIEXPORT void JNICALL Java_meshgui_Home_eventCallback
     pthread_mutex_lock(&eventLock);
     if(!exitEventLoop)
     {
-      memcpy(name, stringBuff, strlen(stringBuff));
-      jstring juuid = (*env)->NewStringUTF(env,"uuid");
-      jstring jname = (*env)->NewStringUTF(env, name);
-      jmethodID mid_callback        = (*env)->GetMethodID      (env, cls_foo, "discoverUnprovisionedCallback"       , "(Ljava/lang/String;Ljava/lang/String;)V");
-      //jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
+      switch (javaEvent)
+      {
+        case NAME:
+              memcpy(name, stringBuff, strlen(stringBuff));
+              jstring jname = (*env)->NewStringUTF(env, name);
+              if (!mid_callbackDevDetails)
+                mid_callbackDevDetails        = (*env)->GetMethodID      (env, cls_foo, "discoverUnprovisionedCallback"       , "(ILjava/lang/String;)V");
+              //jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
 
-      (*env)->CallVoidMethod      (env, foo_obj, mid_callback, juuid, jname);
-      //(*env)->CallStaticVoidMethod(env, cls_foo, mid_callback_static);
+              (*env)->CallVoidMethod      (env, foo_obj, mid_callbackDevDetails, javaEvent, jname);
+              //(*env)->CallStaticVoidMethod(env, cls_foo, mid_callback_static);
+              break;
+        case UUID:
+              memcpy(uuid, stringBuff, strlen(stringBuff));
+              jstring juuid = (*env)->NewStringUTF(env, uuid);
+              if (!mid_callbackDevDetails)
+                mid_callbackDevDetails        = (*env)->GetMethodID      (env, cls_foo, "discoverUnprovisionedCallback"       , "(ILjava/lang/String;)V");
+              //jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
+
+              (*env)->CallVoidMethod      (env, foo_obj, mid_callbackDevDetails, javaEvent, juuid);
+              //do stuff
+              break;
+        default:
+            break;
+      }
+       memset(stringBuff, 0, 512);
     }
     pthread_mutex_unlock(&eventLock);
     sem_post(&eventEmpty);

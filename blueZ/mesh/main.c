@@ -251,11 +251,7 @@ static void print_device(GDBusProxy *proxy, const char *description)
 	else
 		name = "<unknown>";
 
-	sem_wait(&eventEmpty);
-	pthread_mutex_lock(&eventLock);
-    memcpy(stringBuff, name, strlen(name));
-	pthread_mutex_unlock(&eventLock);
-	sem_post(&eventFull);
+	sendEventToJava(NAME, name);
 
 	printf("%s%s%sDevice %s %s\n",
 				description ? "[" : "",
@@ -381,6 +377,8 @@ static void print_prov_service(struct prov_svc_data *prov_data)
 	for (i = 0; i < 16; ++i) {
 		sprintf(txt_uuid + (i * 2), "%2.2x", prov_data->dev_uuid[i]);
 	}
+
+	sendEventToJava(UUID, txt_uuid);
 
 	printf("%s\tDevice UUID: %s\n", prefix, txt_uuid);
 	printf("%s\tOOB: %4.4x\n", prefix, prov_data->oob);
@@ -1898,6 +1896,18 @@ static void client_ready(GDBusClient *client, void *user_data)
 {
 	printf("Client is ready!!!\n");
 	//bt_shell_attach(fileno(stdin));
+}
+
+void sendEventToJava(enum eventKey event, char *eventStr) {
+
+	//printf("sendEventToJava() event: %d, eventStr: %s\n", event, eventStr);
+
+	sem_wait(&eventEmpty);
+	pthread_mutex_lock(&eventLock);
+	javaEvent = event;
+    memcpy(stringBuff, eventStr, strlen(eventStr));
+	pthread_mutex_unlock(&eventLock);
+	sem_post(&eventFull);
 }
 
 int mesh_init(void)
