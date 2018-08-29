@@ -10,6 +10,7 @@ char *stringBuff;
 pthread_mutex_t eventLock;
 sem_t eventEmpty;
 sem_t eventFull;
+uint8_t exitEventLoop;
 
 JNIEXPORT void JNICALL Java_meshgui_Home_init
 (JNIEnv *env, jclass class) {
@@ -86,26 +87,33 @@ JNIEXPORT void JNICALL Java_meshgui_Home_level
 JNIEXPORT void JNICALL Java_meshgui_Home_eventCallback
 (JNIEnv *env, jobject foo_obj) {
 
-  printf("in eventCallback()\n");
   // Get the class from the object we got passed in
   jclass cls_foo = (*env)->GetObjectClass(env, foo_obj);
 
   char name[100];
+  memset(name, 0, 100);
   char uuid[20];
+  memset(uuid, 0, 20);
 
-  sem_wait(&eventFull);
-  pthread_mutex_lock(&eventLock);
-  memcpy(name, stringBuff, strlen(stringBuff));
-  pthread_mutex_unlock(&eventLock);
-  sem_post(&eventEmpty);
+  exitEventLoop = 0;
 
-  jstring juuid = (*env)->NewStringUTF(env,"uuid");
-  jstring jname = (*env)->NewStringUTF(env, name);
+  do {
+    sem_wait(&eventFull);
+    pthread_mutex_lock(&eventLock);
+    if(!exitEventLoop)
+    {
+      memcpy(name, stringBuff, strlen(stringBuff));
+      jstring juuid = (*env)->NewStringUTF(env,"uuid");
+      jstring jname = (*env)->NewStringUTF(env, name);
+      jmethodID mid_callback        = (*env)->GetMethodID      (env, cls_foo, "discoverUnprovisionedCallback"       , "(Ljava/lang/String;Ljava/lang/String;)V");
+      //jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
 
-  // get the method IDs from that class
-  jmethodID mid_callback        = (*env)->GetMethodID      (env, cls_foo, "discoverUnprovisionedCallback"       , "(Ljava/lang/String;Ljava/lang/String;)V");
-  //jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
-  // then call them.
-  (*env)->CallVoidMethod      (env, foo_obj, mid_callback, juuid, jname);
-  //(*env)->CallStaticVoidMethod(env, cls_foo, mid_callback_static);
+      (*env)->CallVoidMethod      (env, foo_obj, mid_callback, juuid, jname);
+      //(*env)->CallStaticVoidMethod(env, cls_foo, mid_callback_static);
+    }
+    pthread_mutex_unlock(&eventLock);
+    sem_post(&eventEmpty);
+  } while (!exitEventLoop);
+
+  
 }

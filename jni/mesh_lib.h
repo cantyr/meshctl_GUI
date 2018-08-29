@@ -7,11 +7,13 @@ extern "C" {
 #include <jni.h>
 #include <semaphore.h>
 #include <pthread.h>
+#include <stdint.h>
 
 extern char *stringBuff;
 extern pthread_mutex_t eventLock;
 extern sem_t eventEmpty;
 extern sem_t eventFull;
+extern uint8_t exitEventLoop;
 
 int mesh_init(void);
 //void cmd_security(int);

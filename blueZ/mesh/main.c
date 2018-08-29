@@ -1563,6 +1563,9 @@ void cmd_scan_unprovisioned(int onoff)
 		set_scan_filter_uuids(filters);
 		method = "StartDiscovery";
 	} else {
+		exitEventLoop = 1;
+		sem_wait(&eventEmpty);
+		sem_post(&eventFull);
 		method = "StopDiscovery";
 	}
 

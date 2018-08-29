@@ -52,18 +52,19 @@ public class Home extends javax.swing.JFrame {
     public static native void lightness(int lightness);
 
     public static native void level(int level);
+    
+    public DiscoverUnprovisionedWindow window;
 
     /**
      * * C Callback Stuff **
      */
     private native void eventCallback();
-    
+
     /**
-    ** GUI STUFF **
-    */
+     ** GUI STUFF **
+     */
     public ArrayList<String> provisionedDevices = new ArrayList<>();
     public ArrayList<String> unprovisionedDevicesArrayList = new ArrayList<>();
-    public javax.swing.DefaultListModel unprovisionedDevicesListModel;
     public DefaultListModel<String> deviceListModel;
     public DefaultListModel<String> groupsListModel;
     public DefaultListModel<String> groupsDeviceListModel;
@@ -86,17 +87,9 @@ public class Home extends javax.swing.JFrame {
      * Creates new form GUI
      */
     public Home() {
-
-        unprovisionedDevicesListModel = new DefaultListModel();
-        unprovisionedDevicesList = new JList(unprovisionedDevicesListModel);
-        deviceListModel = new DefaultListModel<>();
-        groupsListModel = new DefaultListModel<>();
-        groupsDeviceListModel = new DefaultListModel<>();
-        this.addWindowListener(new java.awt.event.WindowAdapter()
-        {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent e)
-            {
+            public void windowClosing(java.awt.event.WindowEvent e) {
                 endMainloop();
                 System.out.println("Closed");
                 e.getWindow().dispose();
@@ -113,6 +106,13 @@ public class Home extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        
+        unprovisionedDevicesListModel = new DefaultListModel();
+        unprovisionedDevicesList = new javax.swing.JList();
+        unprovisionedDevicesScrollPane = new javax.swing.JScrollPane();
+        unprovisionedDevicesList.setModel(unprovisionedDevicesListModel);
+        unprovisionedDevicesScrollPane.setViewportView(unprovisionedDevicesList);
+        window = new DiscoverUnprovisionedWindow(this);
 
         bluetoothMeshLabel = new javax.swing.JLabel();
         scanDevicesBtn = new javax.swing.JButton();
@@ -120,6 +120,10 @@ public class Home extends javax.swing.JFrame {
         provisionedDevicesScrollPane = new javax.swing.JScrollPane();
         provisionedDevicesList = new javax.swing.JList<>();
         groupsBtn = new javax.swing.JButton();
+
+        deviceListModel = new DefaultListModel<>();
+        groupsListModel = new DefaultListModel<>();
+        groupsDeviceListModel = new DefaultListModel<>();
 
         bluetoothMeshLabel.setText("LEDVANCE Bluetooth Mesh");
 
@@ -129,71 +133,71 @@ public class Home extends javax.swing.JFrame {
                 scanDevicesBtnMouseClicked(evt);
             }
         });
-
         provisionedDevicesLabel.setText("Provisioned Devices");
 
-        provisionedDevicesList.setModel( deviceListModel
-            /*new javax.swing.AbstractListModel<String>() {
+        provisionedDevicesList.setModel(deviceListModel
+        /*new javax.swing.AbstractListModel<String>() {
                 //provisionedDevices = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
                 public int getSize() { return provisionedDevices.size(); }
                 public String getElementAt(int i) { return provisionedDevices.get(i); }
                 public ArrayList updateList( String device ) { provisionedDevices.add( device ); return provisionedDevices; }
             }*/);
-            provisionedDevicesList.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    provisionedDevicesListMouseClicked(evt);
-                }
-            });
-            provisionedDevicesScrollPane.setViewportView(provisionedDevicesList);
+        provisionedDevicesList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                provisionedDevicesListMouseClicked(evt);
+            }
+        });
+        
+        provisionedDevicesScrollPane.setViewportView(provisionedDevicesList);
 
-            groupsBtn.setText("Groups");
-            groupsBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    groupsBtnMouseClicked(evt);
-                }
-            });
+        groupsBtn.setText("Groups");
+        groupsBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                groupsBtnMouseClicked(evt);
+            }
+        });
 
-            javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-            getContentPane().setLayout(layout);
-            layout.setHorizontalGroup(
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(bluetoothMeshLabel)
-                    .addGap(0, 0, Short.MAX_VALUE))
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(120, 120, 120)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(provisionedDevicesLabel)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(provisionedDevicesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(28, 28, 28)
-                            .addComponent(groupsBtn)))
-                    .addContainerGap(110, Short.MAX_VALUE))
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scanDevicesBtn)
-                    .addGap(221, 221, 221))
-            );
-            layout.setVerticalGroup(
+                                .addComponent(bluetoothMeshLabel)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(120, 120, 120)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(provisionedDevicesLabel)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(provisionedDevicesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(28, 28, 28)
+                                                .addComponent(groupsBtn)))
+                                .addContainerGap(110, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(scanDevicesBtn)
+                                .addGap(221, 221, 221))
+        );
+        layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(bluetoothMeshLabel)
-                    .addGap(12, 12, 12)
-                    .addComponent(scanDevicesBtn)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(provisionedDevicesLabel)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(provisionedDevicesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(30, 30, 30)
-                            .addComponent(groupsBtn)))
-                    .addContainerGap(25, Short.MAX_VALUE))
-            );
+                                .addComponent(bluetoothMeshLabel)
+                                .addGap(12, 12, 12)
+                                .addComponent(scanDevicesBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(provisionedDevicesLabel)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(provisionedDevicesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(30, 30, 30)
+                                                .addComponent(groupsBtn)))
+                                .addContainerGap(25, Short.MAX_VALUE))
+        );
 
-            pack();
-        }// </editor-fold>//GEN-END:initComponents
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
 
     private void provisionedDevicesListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_provisionedDevicesListMouseClicked
 
@@ -201,9 +205,8 @@ public class Home extends javax.swing.JFrame {
         new DeviceControl(device).setVisible(true);
     }//GEN-LAST:event_provisionedDevicesListMouseClicked
 
-    private void scanDevicesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scanDevicesBtnMouseClicked
-        new DiscoverUnprovisionedWindow(this).setVisible(true);
-        Home home = new Home();
+    public void scanDevicesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scanDevicesBtnMouseClicked
+        window.setVisible(true);
         home.discoverUnprovisioned(1);
         home.eventCallback();
     }//GEN-LAST:event_scanDevicesBtnMouseClicked
@@ -211,17 +214,18 @@ public class Home extends javax.swing.JFrame {
     public void discoverUnprovisionedCallback(String uuid, String name) {
         String newName = name;
         System.out.println("callback: " + uuid + ", " + newName + "\n");
-        unprovisionedDevicesListModel.addElement(newName);
-        System.out.println(unprovisionedDevicesListModel.toString() );
+        window.getUnprovisionedListModel().addElement(newName);
+       
+        //unprovisionedDevicesListModel.addElement(newName);
+        System.out.println("ListModel in Callback: " + window.getUnprovisionedListModel().toString());
     }
 
     public static void callback_static() {
         System.out.println("static callback");
     }
-    
-    private static void populateList(javax.swing.JList<String> list, String val)
-    {
-        DefaultListModel model = (DefaultListModel)list.getModel();
+
+    private static void populateList(javax.swing.JList<String> list, String val) {
+        DefaultListModel model = (DefaultListModel) list.getModel();
         model.removeAllElements();
         model.addElement(val);
     }
@@ -233,6 +237,8 @@ public class Home extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    
+    public static Home home;
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -257,29 +263,25 @@ public class Home extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        Home home = new Home();
+        home = new Home();
         home.setVisible(true);
         home.security(0);
         home.init();
 
     }
-    class DiscoverUnprovisionedWindow extends javax.swing.JWindow {
 
+    class DiscoverUnprovisionedWindow extends javax.swing.JWindow {
+        
         public DiscoverUnprovisionedWindow(JFrame parent) {
             super(parent);
             unprovisionedDevicesLabel = new javax.swing.JLabel();
-            unprovisionedDevicesScrollPane = new javax.swing.JScrollPane(unprovisionedDevicesList);
             cancelBtn = new javax.swing.JButton();
-
-            unprovisionedDevicesList.setModel(unprovisionedDevicesListModel);
-            unprovisionedDevicesListModel.addElement("hey");
-            System.out.println(unprovisionedDevicesListModel.toString() );
+            System.out.println("ListModel in DiscoverUnprovisionedWindow: " + unprovisionedDevicesListModel.toString());
             unprovisionedDevicesList.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     String device = unprovisionedDevicesList.getSelectedValue().toString();
                     device = device.substring(0, device.indexOf(" "));
                     deviceListModel.addElement(device);
-                    Home home = new Home();
                     home.provision(device);
                     home.appKeyAdd(1);
                     home.appKeyBind(0, 1, 1000);
@@ -290,13 +292,12 @@ public class Home extends javax.swing.JFrame {
                     dispose();
                 }
             });
-            //unprovisionedDevicesScrollPane.setViewportView(unprovisionedDevicesList);
 
             cancelBtn.setText("Cancel");
             cancelBtn.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    Home home = new Home();
-                    home.discoverUnprovisioned(0);
+                    
+                    Home.discoverUnprovisioned(0);
                     dispose();
                 }
             });
@@ -336,6 +337,10 @@ public class Home extends javax.swing.JFrame {
             this.setAlwaysOnTop(true);
             this.setLocationRelativeTo(parent);
         }
+
+        public DefaultListModel getUnprovisionedListModel() {
+            return unprovisionedDevicesListModel;
+        } 
     }
 
     class GroupsWindow extends javax.swing.JWindow {
@@ -825,10 +830,10 @@ public class Home extends javax.swing.JFrame {
 
     public void onOffBtnPress(javax.swing.JToggleButton btn) {
         if (btn.isSelected()) {
-            new Home().onoff(0);
+            home.onoff(0);
             btn.setText("ON");
         } else {
-            new Home().onoff(1);
+            home.onoff(1);
             btn.setText("OFF");
         }
     }
@@ -844,15 +849,15 @@ public class Home extends javax.swing.JFrame {
     }
 
     public void colorDiamondDrag(java.awt.event.MouseEvent evt) {
-        new Home().hsl((int)getAngle(evt.getX(), evt.getY()), 100, 50);
+        home.hsl((int) getAngle(evt.getX(), evt.getY()), 100, 50);
     }
 
     public void colorDiamondClick(java.awt.event.MouseEvent evt) {
-        new Home().hsl((int)getAngle(evt.getX(), evt.getY()), 100, 50);
+        home.hsl((int) getAngle(evt.getX(), evt.getY()), 100, 50);
     }
 
     public void brightnessSliderDrag(javax.swing.JSlider slider) {
-        new Home().lightness(slider.getValue());
+        home.lightness(slider.getValue());
     }
 
     public DefaultListModel<String> getDeviceList() {
@@ -864,14 +869,15 @@ public class Home extends javax.swing.JFrame {
         return devicesListModel;
     }
 
-    public static int square(int input){
+    public static int square(int input) {
         int output = input * input;
         return output;
     }
-    public static int power(int input, int exponent){
-        int output,i;
-        output=1;
-        for(i=0;i<exponent;i++){
+
+    public static int power(int input, int exponent) {
+        int output, i;
+        output = 1;
+        for (i = 0; i < exponent; i++) {
             output *= input;
         }
         return output;
@@ -886,8 +892,8 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton scanDevicesBtn;
     // End of variables declaration//GEN-END:variables
     private javax.swing.JLabel unprovisionedDevicesLabel;
-    
-    private javax.swing.JScrollPane unprovisionedDevicesScrollPane;
+    public DefaultListModel unprovisionedDevicesListModel;
+    public javax.swing.JScrollPane unprovisionedDevicesScrollPane;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JSlider brightnessSlider;
     private javax.swing.JToggleButton cctColorBtn;
