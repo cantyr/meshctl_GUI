@@ -239,7 +239,7 @@ static void print_adapter(GDBusProxy *proxy, const char *description)
 static void print_device(GDBusProxy *proxy, const char *description)
 {
 	DBusMessageIter iter;
-	const char *address, *name;
+	char *address, *name;
 
 	if (g_dbus_proxy_get_property(proxy, "Address", &iter) == FALSE)
 		return;
@@ -1624,7 +1624,7 @@ static const char *security2str(uint8_t level)
 	}
 }
 
-static void cmd_security(int argc, char *argv[])
+/*void cmd_security(int argc, char *argv[])
 {
 	uint8_t level;
 	char *end;
@@ -1635,6 +1635,23 @@ static void cmd_security(int argc, char *argv[])
 	level = strtol(argv[1], &end, 10);
 	if (end == argv[1] || !prov_set_sec_level(level)) {
 		printf("Invalid security level %s\n", argv[1]);
+		return ;
+	}
+
+done:
+	printf("Provision Security Level set to %u (%s)\n",
+			prov_get_sec_level(),
+			security2str(prov_get_sec_level()));
+
+	return ;
+}*/
+
+void cmd_security(int lvl)
+{
+	uint8_t level = lvl;
+
+	if (!prov_set_sec_level(lvl)) {
+		printf("Invalid security level %d\n", lvl);
 		return ;
 	}
 
@@ -1789,7 +1806,7 @@ static void mesh_prov_done(void *user_data, int status)
 	disconnect_device(prov_disconn_reply, node);
 }
 
-void cmd_start_prov(char *uuid)
+void cmd_start_prov(const char *uuid)
 {
 	GDBusProxy *proxy;
 	struct mesh_device *dev;

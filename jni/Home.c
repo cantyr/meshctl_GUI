@@ -22,6 +22,7 @@ JNIEXPORT void JNICALL Java_meshgui_Home_init
 JNIEXPORT void JNICALL Java_meshgui_Home_security
 (JNIEnv *env, jclass class, jint secLvl) {
   	printf("Setting security to %d\n", secLvl );
+    cmd_security(secLvl);
 }
 
 JNIEXPORT void JNICALL Java_meshgui_Home_discoverUnprovisioned
@@ -32,7 +33,7 @@ JNIEXPORT void JNICALL Java_meshgui_Home_discoverUnprovisioned
 
 JNIEXPORT void JNICALL Java_meshgui_Home_provision
 (JNIEnv *env, jclass class, jstring uuid) {
-	char *str= (*env)->GetStringUTFChars(env,uuid,0);
+	const char *str= (*env)->GetStringUTFChars(env,uuid,0);
 	printf("Provision %s\n", str);
     cmd_start_prov(str);
 	(*env)->ReleaseStringUTFChars(env, uuid, str);
@@ -50,7 +51,7 @@ JNIEXPORT void JNICALL Java_meshgui_Home_appKeyBind
 
 JNIEXPORT void JNICALL Java_meshgui_Home_removeNode
 (JNIEnv *env, jclass class, jstring device) {
-	const char *str= (*env)->GetStringUTFChars(env,device,0);
+  const char *str= (*env)->GetStringUTFChars(env,device,0);
   printf("Removing node %s\n", str );
   (*env)->ReleaseStringUTFChars(env, device, str);
 }
@@ -87,18 +88,11 @@ JNIEXPORT void JNICALL Java_meshgui_Home_level
 }
 
 JNIEXPORT void JNICALL Java_meshgui_Home_eventCallback
-(JNIEnv *env, jobject foo_obj) {
+(JNIEnv *env, jobject jobj) {
 
-  // Get the class from the object we got passed in
-  jclass cls_foo = (*env)->GetObjectClass(env, foo_obj);
-
-  char name[100];
-  char uuid[32];
+  jclass jcls = (*env)->GetObjectClass(env, jobj);
   static jmethodID mid_callbackDevDetails;
-
-  memset(uuid, 0, 32);
-  memset(name, 0, 100);
-
+  jstring juuid,jname;
 
   exitEventLoop = 0;
 
@@ -110,23 +104,21 @@ JNIEXPORT void JNICALL Java_meshgui_Home_eventCallback
       switch (javaEvent)
       {
         case NAME:
-              memcpy(name, stringBuff, strlen(stringBuff));
-              jstring jname = (*env)->NewStringUTF(env, name);
+              jname = (*env)->NewStringUTF(env, stringBuff);
               if (!mid_callbackDevDetails)
-                mid_callbackDevDetails        = (*env)->GetMethodID      (env, cls_foo, "discoverUnprovisionedCallback"       , "(ILjava/lang/String;)V");
+                mid_callbackDevDetails        = (*env)->GetMethodID      (env, jcls, "discoverUnprovisionedCallback"       , "(ILjava/lang/String;)V");
               //jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
 
-              (*env)->CallVoidMethod      (env, foo_obj, mid_callbackDevDetails, javaEvent, jname);
+              (*env)->CallVoidMethod      (env, jobj, mid_callbackDevDetails, javaEvent, jname);
               //(*env)->CallStaticVoidMethod(env, cls_foo, mid_callback_static);
               break;
         case UUID:
-              memcpy(uuid, stringBuff, strlen(stringBuff));
-              jstring juuid = (*env)->NewStringUTF(env, uuid);
+              juuid = (*env)->NewStringUTF(env, stringBuff);
               if (!mid_callbackDevDetails)
-                mid_callbackDevDetails        = (*env)->GetMethodID      (env, cls_foo, "discoverUnprovisionedCallback"       , "(ILjava/lang/String;)V");
+                mid_callbackDevDetails        = (*env)->GetMethodID      (env, jcls, "discoverUnprovisionedCallback"       , "(ILjava/lang/String;)V");
               //jmethodID mid_callback_static = (*env)->GetStaticMethodID(env, cls_foo, "callback_static", "()V");
 
-              (*env)->CallVoidMethod      (env, foo_obj, mid_callbackDevDetails, javaEvent, juuid);
+              (*env)->CallVoidMethod      (env, jobj, mid_callbackDevDetails, javaEvent, juuid);
               //do stuff
               break;
         default:
@@ -137,6 +129,4 @@ JNIEXPORT void JNICALL Java_meshgui_Home_eventCallback
     pthread_mutex_unlock(&eventLock);
     sem_post(&eventEmpty);
   } while (!exitEventLoop);
-
-  
 }

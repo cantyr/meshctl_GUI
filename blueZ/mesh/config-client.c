@@ -461,13 +461,12 @@ static void cmd_composition_get(int argc, char *argv[])
 
 	if (IS_UNASSIGNED(target)) {
 		printf("Destination not set\n");
-		return bt_shell_noninteractive_quit(EXIT_FAILURE);
 	}
 
 	node = node_find_by_addr(target);
 
 	if (!node)
-		return bt_shell_noninteractive_quit(EXIT_FAILURE);
+		printf( "!node config-client.c line 469\n" );
 
 	n = mesh_opcode_set(OP_DEV_COMP_GET, msg);
 
@@ -476,10 +475,7 @@ static void cmd_composition_get(int argc, char *argv[])
 
 	if (!config_send(msg, n)) {
 		printf("Failed to send \"GET NODE COMPOSITION\"\n");
-		return bt_shell_noninteractive_quit(EXIT_FAILURE);
 	}
-
-	return bt_shell_noninteractive_quit(EXIT_SUCCESS);
 }
 
 static void cmd_net_key(int argc, char *argv[], uint32_t opcode)

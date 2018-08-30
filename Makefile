@@ -7,7 +7,7 @@ CFLAGS += $(foreach d, $(JNI_INCLUDE), -I$d)
 CFLAGS += $(foreach d, $(BLUEZ_INCLUDE), -I$d)
 LDFLAGS = $(foreach d, $(BLUEZ_LIBS), -l$d) # linking flags
 LDFLAGS += -shared
-RM = rm -f  # rm command
+RM = sudo rm -f  # rm command
 TARGET_LIB = /usr/lib/libmesh_lib.so # target lib
 JNI_SETUP = javac -h . meshgui/Home.java
 
