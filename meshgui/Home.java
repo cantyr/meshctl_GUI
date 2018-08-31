@@ -291,12 +291,12 @@ public class Home extends javax.swing.JFrame {
         //</editor-fold>
         home = new Home();
         home.setVisible(true);
-        home.security(0);
+        /*ThreadRunnable callbackRunnable = new ThreadRunnable(home);
+        new Thread(callbackRunnable).start();*/
         InitThreadRunnable initRunnable = new InitThreadRunnable(home);
         new Thread(initRunnable).start();
-        ThreadRunnable callbackRunnable = new ThreadRunnable(home);
-        new Thread(callbackRunnable).start();
-        //System.out.println("All the threads are started");
+        home.security(0);
+        System.out.println("All the threads are started");
     }
 
     class DiscoverUnprovisionedWindow extends javax.swing.JWindow {

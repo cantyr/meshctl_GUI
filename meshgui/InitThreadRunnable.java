@@ -11,19 +11,21 @@ public class InitThreadRunnable implements Runnable {
         this.home = _home;
     }
 
-    public synchronized void run() {
+    @Override
+    public void run() {
         System.out.println( "Starting init thread!!!" );
         /*try {
             Thread.sleep(1000);
             synchronized( home ) {
                 System.out.println( "Before notify!!!" );
-                home.notifyAll();
-                System.out.println( "After notify!!!" );
+                home.notify();
                 home.init();
             }
         } catch (InterruptedException ex) {
-            Logger.getLogger(InitThreadRunnable.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println( ex.toString() );
         }*/
+        ThreadRunnable callbackRunnable = new ThreadRunnable(home);
+        new Thread(callbackRunnable).start();
         home.init();
     }
 }
