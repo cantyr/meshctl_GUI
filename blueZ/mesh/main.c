@@ -1561,9 +1561,6 @@ void cmd_scan_unprovisioned(int onoff)
 		set_scan_filter_uuids(filters);
 		method = "StartDiscovery";
 	} else {
-		exitEventLoop = 1;
-		sem_wait(&eventEmpty);
-		sem_post(&eventFull);
 		method = "StopDiscovery";
 	}
 
@@ -1917,7 +1914,7 @@ static void client_ready(GDBusClient *client, void *user_data)
 
 void sendEventToJava(enum eventKey event, char *eventStr) {
 
-	//printf("sendEventToJava() event: %d, eventStr: %s\n", event, eventStr);
+	printf("sendEventToJava() event: %d, eventStr: %s\n", event, eventStr);
 
 	sem_wait(&eventEmpty);
 	pthread_mutex_lock(&eventLock);
@@ -1947,8 +1944,6 @@ int mesh_init(void)
 	int retFull;
 	retEmpty = sem_init(&eventEmpty, 0, 1); 
 	retFull = sem_init(&eventFull, 0, 0); 
-
-	printf("stringBuff: %s\n", stringBuff);
 
 	mainloop_init();
 
@@ -2057,6 +2052,13 @@ int mesh_init(void)
 	g_list_free(service_list);
 	g_list_free_full(ctrl_list, proxy_leak);
 	g_free(stringBuff);
+
+	sem_wait(&eventEmpty);
+	pthread_mutex_lock(&eventLock);
+	exitEventLoop = 1;
+	pthread_mutex_unlock(&eventLock);
+	sem_post(&eventFull);
+
 
 	pthread_mutex_destroy(&Mutex);
 	sem_destroy(&eventFull);

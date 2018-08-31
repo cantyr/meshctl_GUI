@@ -96,6 +96,8 @@ JNIEXPORT void JNICALL Java_meshgui_Home_eventCallback
 
   exitEventLoop = 0;
 
+  printf("Before do while()\n");
+
   do {
     sem_wait(&eventFull);
     pthread_mutex_lock(&eventLock);

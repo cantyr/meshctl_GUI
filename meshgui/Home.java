@@ -6,6 +6,8 @@
 package meshgui;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -216,9 +218,7 @@ public class Home extends javax.swing.JFrame {
     public void scanDevicesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scanDevicesBtnMouseClicked
         window.setVisible(true);
         home.discoverUnprovisioned(1);
-        ThreadRunnable myRunnable = new ThreadRunnable(home);
-        Thread t = new Thread(myRunnable);
-        t.start();
+        
     }//GEN-LAST:event_scanDevicesBtnMouseClicked
 
     public void discoverUnprovisionedCallback(int key, String str) {
@@ -292,8 +292,11 @@ public class Home extends javax.swing.JFrame {
         home = new Home();
         home.setVisible(true);
         home.security(0);
-        home.init();
-
+        InitThreadRunnable initRunnable = new InitThreadRunnable(home);
+        new Thread(initRunnable).start();
+        ThreadRunnable callbackRunnable = new ThreadRunnable(home);
+        new Thread(callbackRunnable).start();
+        //System.out.println("All the threads are started");
     }
 
     class DiscoverUnprovisionedWindow extends javax.swing.JWindow {
