@@ -778,6 +778,56 @@
       },
       "IVindex":0,
       "sequenceNumber":7
+    },
+    {
+      "deviceKey":"130814708e6add65140a7d8fceba86f4",
+      "configuration":{
+        "netKeys":[
+          "0000"
+        ],
+        "elements":[
+          {
+            "elementIndex":0,
+            "unicastAddress":"0124"
+          }
+        ]
+      },
+      "composition":{
+        "cid":"0131",
+        "pid":"0008",
+        "vid":"0001",
+        "crpl":"0008",
+        "features":{
+          "relay":true,
+          "proxy":true,
+          "friend":false,
+          "lpn":false
+        },
+        "elements":[
+          {
+            "elementIndex":0,
+            "location":"0106",
+            "models":[
+              "0000",
+              "0002",
+              "1203",
+              "1204",
+              "1206",
+              "1207",
+              "1200",
+              "1000",
+              "1004",
+              "1006",
+              "1007",
+              "1002",
+              "1300",
+              "1301"
+            ]
+          }
+        ]
+      },
+      "IVindex":0,
+      "sequenceNumber":5
     }
   ],
   "IVindex":0,

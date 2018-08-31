@@ -1,6 +1,8 @@
 include blueZ/Makefile
 JNI_INCLUDE = /usr/lib/jvm/java-8-openjdk-amd64/include/
 JNI_INCLUDE += /usr/lib/jvm/java-8-openjdk-amd64/include/linux
+JNI_INCLUDE += /usr/lib/jvm/java-8-oracle/include/
+JNI_INCLUDE += /usr/lib/jvm/java-8-oracle/include/linux
 CC = gcc # C compiler
 CFLAGS = -fPIC -O2 -g # C flags
 CFLAGS += $(foreach d, $(JNI_INCLUDE), -I$d)
