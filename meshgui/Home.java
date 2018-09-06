@@ -293,6 +293,8 @@ public class Home extends javax.swing.JFrame {
         home.setVisible(true);
         /*ThreadRunnable callbackRunnable = new ThreadRunnable(home);
         new Thread(callbackRunnable).start();*/
+        ThreadSocket server = new ThreadSocket();
+        new Thread(server).start();
         InitThreadRunnable initRunnable = new InitThreadRunnable(home);
         new Thread(initRunnable).start();
         home.security(0);
